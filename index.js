@@ -96,13 +96,17 @@
       ]
     }
    
-    try {
-      await pidKiller.query(sqlKillQuery(queryId))
-    } catch (err) {
-      DEBUG && console.log(err.message)
-    } finally {
-      // pidKiller.release()
-    }
+    await new Promise(async (resolve, reject) => {
+      let result
+      try {
+        result = pidKiller.query(sqlKillQuery(queryId))
+      } catch (err) {
+        reject( { rows: [] } )
+        console.log(err.message)
+      } finally {
+        resolve(result)
+      }    
+    })
 
     const data = await new Promise(async (resolve, reject) => {
       let result
@@ -114,7 +118,7 @@
       } finally {
         resolve(result)
         // client.release()
-      }    
+      }
     })
 
     try {
@@ -145,7 +149,7 @@
         console.log(err.message)
       } finally {
         resolve(result)
-      }    
+      }
     })
 
     res.send(JSON.stringify(data.rows))
