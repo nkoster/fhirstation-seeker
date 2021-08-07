@@ -163,4 +163,8 @@
     console.log('Seeker at port', apiPort)
   ).on('error', err => console.log(err.message))
 
+  process.on('uncaughtException', err => {
+    console.log('Caught exception: ' + err)
+  })
+
 })()
